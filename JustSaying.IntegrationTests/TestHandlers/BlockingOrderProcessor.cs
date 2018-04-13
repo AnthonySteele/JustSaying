@@ -15,7 +15,7 @@ namespace JustSaying.IntegrationTests.TestHandlers
 
         public TaskCompletionSource<object> DoneSignal { get; private set; }
 
-        public Task<bool> Handle(OrderPlaced message)
+        public Task<bool> Handle(MessageEnvelope<OrderPlaced> env)
         {
             ReceivedMessageCount++;
             return Task.FromResult(true);

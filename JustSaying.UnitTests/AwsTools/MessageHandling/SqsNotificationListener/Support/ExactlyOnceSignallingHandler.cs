@@ -14,7 +14,7 @@ namespace JustSaying.UnitTests.AwsTools.MessageHandling.SqsNotificationListener.
             _doneSignal = doneSignal;
         }
 
-        public Task<bool> Handle(GenericMessage message)
+        public Task<bool> Handle(MessageEnvelope<GenericMessage> env)
         {
             HandleWasCalled = true;
             Tasks.DelaySendDone(_doneSignal);

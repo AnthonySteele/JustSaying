@@ -12,7 +12,7 @@ namespace JustSaying.IntegrationTests
 {
     public class OrderPlacedHandler : IHandlerAsync<GenericMessage>
     {
-        public Task<bool> Handle(GenericMessage message)
+        public Task<bool> Handle(MessageEnvelope<GenericMessage> env)
         {
             return Task.FromResult(true);
         }

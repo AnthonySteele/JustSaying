@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using JustSaying.Messaging.MessageHandling;
 using JustSaying.TestingFramework;
 
@@ -15,11 +15,11 @@ namespace JustSaying.UnitTests.AwsTools.MessageHandling.SqsNotificationListener.
             _inner = inner;
         }
 
-        public async Task<bool> Handle(T message)
+        public async Task<bool> Handle(MessageEnvelope<T> env)
         {
             try
             {
-                return await _inner.Handle(message);
+                return await _inner.Handle(env);
             }
             finally 
             {

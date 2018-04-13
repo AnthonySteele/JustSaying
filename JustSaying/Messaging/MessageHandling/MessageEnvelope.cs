@@ -22,17 +22,17 @@ namespace JustSaying.Messaging.MessageHandling
 
     public static class MessageEnvelopeExtensions
     {
-        public static string MessageId<T>(this MessageEnvelope<T> env) where T: class
+        public static string MessageId<T>(this MessageEnvelope<T> env)
         {
             return env.RawMessage.MessageId;
         }
 
-        public static string ReceiptHandle<T>(this MessageEnvelope<T> env) where T : class
+        public static string ReceiptHandle<T>(this MessageEnvelope<T> env)
         {
             return env.RawMessage.ReceiptHandle;
         }
 
-        public static string AttributeValue<T>(this MessageEnvelope<T> env, string name) where T : class
+        public static string AttributeValue<T>(this MessageEnvelope<T> env, string name)
         {
             return env.RawMessage.Attributes[name];
         }

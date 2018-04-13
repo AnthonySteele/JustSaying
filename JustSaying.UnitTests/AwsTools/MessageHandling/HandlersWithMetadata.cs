@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using JustSaying.Messaging.MessageHandling;
 using JustSaying.TestingFramework;
 
@@ -6,7 +6,7 @@ namespace JustSaying.UnitTests.AwsTools.MessageHandling
 {
     public class UnadornedHandlerAsync : IHandlerAsync<GenericMessage>
     {
-        public Task<bool> Handle(GenericMessage message)
+        public Task<bool> Handle(MessageEnvelope<GenericMessage> env)
         {
             return Task.FromResult(true);
         }
@@ -15,7 +15,7 @@ namespace JustSaying.UnitTests.AwsTools.MessageHandling
     [ExactlyOnce(TimeOut = 42)]
     public class OnceTestHandlerAsync : IHandlerAsync<GenericMessage>
     {
-        public Task<bool> Handle(GenericMessage message)
+        public Task<bool> Handle(MessageEnvelope<GenericMessage> env)
         {
             return Task.FromResult(true);
         }
@@ -24,7 +24,7 @@ namespace JustSaying.UnitTests.AwsTools.MessageHandling
     [ExactlyOnce]
     public class OnceHandlerWithImplicitTimeoutAsync : IHandlerAsync<GenericMessage>
     {
-        public Task<bool> Handle(GenericMessage message)
+        public Task<bool> Handle(MessageEnvelope<GenericMessage> env)
         {
             return Task.FromResult(true);
         }

@@ -1,4 +1,4 @@
-﻿using JustSaying.Messaging.MessageHandling;
+using JustSaying.Messaging.MessageHandling;
 using StructureMap;
 
 namespace JustSaying.IntegrationTests.WhenRegisteringHandlersViaResolver

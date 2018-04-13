@@ -12,9 +12,9 @@ namespace JustSaying.IntegrationTests.TestHandlers
             _future = future;
         }
 
-        public async Task<bool> Handle(OrderPlaced message)
+        public async Task<bool> Handle(MessageEnvelope<OrderPlaced> env)
         {
-            await _future.Complete(message);
+            await _future.Complete(env.Message);
             return true;
         }
 

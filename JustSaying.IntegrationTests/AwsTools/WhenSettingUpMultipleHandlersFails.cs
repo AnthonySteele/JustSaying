@@ -19,7 +19,7 @@ namespace JustSaying.IntegrationTests.AwsTools
 
         public class OrderHandler : IHandlerAsync<Order>
         {
-            public Task<bool> Handle(Order message)
+            public Task<bool> Handle(MessageEnvelope<Order> env)
             {
                 return Task.FromResult(true);
             }

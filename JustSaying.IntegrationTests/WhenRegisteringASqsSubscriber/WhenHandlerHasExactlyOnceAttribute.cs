@@ -16,7 +16,7 @@ namespace JustSaying.IntegrationTests.WhenRegisteringASqsSubscriber
     public class SampleHandler : IHandlerAsync<GenericMessage>
     {
         private int _count;
-        public Task<bool> Handle(GenericMessage message)
+        public Task<bool> Handle(MessageEnvelope<GenericMessage> env)
         {
             Interlocked.Increment(ref _count);
             return Task.FromResult(true);
