@@ -22,9 +22,9 @@ namespace JustSaying.Messaging.MessageHandling
         private const bool RemoveTheMessageFromTheQueue = true;
         private const bool LeaveItInTheQueue = false;
 
-        public async Task<bool> Handle(T message)
+        public async Task<bool> Handle(MessageEnvelope<T> env)
         {
-            var lockKey = $"{message.UniqueKey()}-{typeof(T).Name.ToLower()}-{_handlerName}";
+            var lockKey = $"{env.Message.UniqueKey()}-{typeof(T).Name.ToLower()}-{_handlerName}";
             var lockResponse = await _messageLock.TryAquireLockAsync(lockKey, TimeSpan.FromSeconds(_timeOut)).ConfigureAwait(false);
             if (!lockResponse.DoIHaveExclusiveLock)
             {
@@ -38,7 +38,7 @@ namespace JustSaying.Messaging.MessageHandling
 
             try
             {
-                var successfullyHandled = await _inner.Handle(message).ConfigureAwait(false);
+                var successfullyHandled = await _inner.Handle(env).ConfigureAwait(false);
                 if (successfullyHandled)
                 {
                     await _messageLock.TryAquireLockPermanentlyAsync(lockKey).ConfigureAwait(false);

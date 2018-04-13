@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Amazon.SQS;
 using Amazon.SQS.Model;
+using JustSaying.Messaging.MessageHandling;
 using JustSaying.Messaging.MessageProcessingStrategies;
 using JustSaying.Messaging.MessageSerialisation;
 using JustSaying.Messaging.Monitoring;
@@ -69,9 +70,10 @@ namespace JustSaying.AwsTools.MessageHandling
             {
                 if (typedMessage != null)
                 {
+                    var env = new MessageEnvelope<Message>(message, typedMessage);
                     typedMessage.ReceiptHandle = message.ReceiptHandle;
                     typedMessage.QueueUrl = _queue.Url;
-                    handlingSucceeded = await CallMessageHandler(typedMessage).ConfigureAwait(false);
+                    handlingSucceeded = await CallMessageHandler(env).ConfigureAwait(false);
                 }
 
                 if (handlingSucceeded)
@@ -102,9 +104,9 @@ namespace JustSaying.AwsTools.MessageHandling
             }
         }
 
-        private async Task<bool> CallMessageHandler(Message message)
+        private async Task<bool> CallMessageHandler(MessageEnvelope<Message> env)
         {
-            var handler = _handlerMap.Get(message.GetType());
+            var handler = _handlerMap.Get(env.Message.GetType());
 
             if (handler == null)
             {
@@ -113,10 +115,10 @@ namespace JustSaying.AwsTools.MessageHandling
 
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
-            var handlerSucceeded = await handler(message).ConfigureAwait(false);
+            var handlerSucceeded = await handler(env).ConfigureAwait(false);
 
             watch.Stop();
-            _log.LogTrace($"Handled message - MessageType: {message.GetType().Name}");
+            _log.LogTrace($"Handled message - MessageType: {env.Message.GetType().Name}");
             _messagingMonitor.HandleTime(watch.ElapsedMilliseconds);
 
             return handlerSucceeded;

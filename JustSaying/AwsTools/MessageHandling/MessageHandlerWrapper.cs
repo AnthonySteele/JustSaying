@@ -17,15 +17,16 @@ namespace JustSaying.AwsTools.MessageHandling
             _messagingMonitor = messagingMonitor;
         }
 
-        public Func<Message, Task<bool>> WrapMessageHandler<T>(Func<IHandlerAsync<T>> futureHandler) where T : Message
+        public Func<MessageEnvelope<Message>, Task<bool>> WrapMessageHandler<T>(Func<IHandlerAsync<T>> futureHandler) where T : Message
         {
-            return async message =>
+            return async env =>
             {
                 var handler = futureHandler();
                 handler = MaybeWrapWithExactlyOnce(handler);
                 handler = MaybeWrapWithStopwatch(handler);
 
-                return await handler.Handle((T)message).ConfigureAwait(false);
+                var typedEnv = env.Convert<T>();
+                return await handler.Handle(typedEnv).ConfigureAwait(false);
             };
         }
 

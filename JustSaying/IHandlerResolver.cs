@@ -4,6 +4,6 @@ namespace JustSaying
 {
     public interface IHandlerResolver
     {
-        IHandlerAsync<T> ResolveHandler<T>(HandlerResolutionContext context);
+        IHandlerAsync<T> ResolveHandler<T>(HandlerResolutionContext context) where T: class;
     }
 }

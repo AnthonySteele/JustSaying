@@ -1,11 +1,10 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using JustSaying.Messaging.MessageHandling;
-using JustSaying.Models;
 
 namespace JustSaying.Messaging.Monitoring
 {
-    public class StopwatchHandler<T> : IHandlerAsync<T> where T : Message
+    public class StopwatchHandler<T> : IHandlerAsync<T> where T : class
     {
         private readonly IHandlerAsync<T> _inner;
         private readonly IMeasureHandlerExecutionTime _monitoring;
@@ -16,14 +15,14 @@ namespace JustSaying.Messaging.Monitoring
             _monitoring = monitoring;
         }
 
-        public async Task<bool> Handle(T message)
+        public async Task<bool> Handle(MessageEnvelope<T> env)
         {
             var watch = Stopwatch.StartNew();
-            var result = await _inner.Handle(message).ConfigureAwait(false);
+            var result = await _inner.Handle(env).ConfigureAwait(false);
 
             watch.Stop();
 
-            _monitoring.HandlerExecutionTime(TypeName(_inner), TypeName(message), watch.Elapsed);
+            _monitoring.HandlerExecutionTime(TypeName(_inner), TypeName(env.Message), watch.Elapsed);
             return result;
         }
 
