@@ -2,7 +2,7 @@ using Amazon.SQS.Model;
 
 namespace JustSaying.Messaging.MessageHandling
 {
-    public class MessageEnvelope<T> where T: class
+    public class MessageEnvelope<T>
     {
         public MessageEnvelope(Message rawMessage, T message)
         {
