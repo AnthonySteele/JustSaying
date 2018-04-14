@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace JustSaying.Messaging.MessageHandling
 {
-    public class ListHandler<T> : IHandlerAsync<T> where T: class
+    public class ListHandler<T> : IHandlerAsync<T>
     {
         private readonly IEnumerable<IHandlerAsync<T>> _handlers;
 
