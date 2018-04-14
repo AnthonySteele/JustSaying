@@ -1,10 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using JustSaying.Models;
 
 namespace JustSaying.Messaging.MessageHandling
 {
-    public class ExactlyOnceHandler<T> : IHandlerAsync<T> where T : Message
+    public class ExactlyOnceHandler<T> : IHandlerAsync<T>
     {
         private readonly IHandlerAsync<T> _inner;
         private readonly IMessageLockAsync _messageLock;

@@ -21,11 +21,15 @@ namespace JustSaying.Messaging.MessageHandling
     /// - There is no need for a message base class at all.
     /// If your serializer can turn the message text into some type T  then you're good to use it.
     /// 
-    /// It sucks that the message handler signature has grown from
+    /// Downsides:
+    /// 
+    /// - It is not good that the message handler signature has grown from
     ///  bool Handle(SomeMessage message)
     /// to
     ///  Task<bool> Handle(MessageEnvelope<SomeMessage> env)
     ///  But I dn't know a way around that.
+    /// 
+    /// - the publish will need a different envelope for publishing concerns like `DelaySeconds`
     /// 
     /// it's a breaking change, if you don't care about the envelope you'd have to add this code to the top of your handler:
     /// var message = env.Message;

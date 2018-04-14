@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon;
@@ -7,7 +7,6 @@ using Amazon.SQS.Model;
 using JustSaying.Messaging;
 using JustSaying.Messaging.MessageSerialisation;
 using Microsoft.Extensions.Logging;
-using Message = JustSaying.Models.Message;
 
 namespace JustSaying.AwsTools.MessageHandling
 {

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using HandlerFunc = System.Func<JustSaying.Messaging.MessageHandling.MessageEnvelope<JustSaying.Models.Message>, System.Threading.Tasks.Task<bool>>;
+using HandlerFunc = System.Func<JustSaying.Messaging.MessageHandling.MessageEnvelope<object>, System.Threading.Tasks.Task<bool>>;
 
 namespace JustSaying.AwsTools.MessageHandling
 {

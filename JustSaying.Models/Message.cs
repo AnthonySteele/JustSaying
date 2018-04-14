@@ -2,9 +2,9 @@ using System;
 
 namespace JustSaying.Models
 {
-    public abstract class Message
+    public abstract class XXMessage
     {
-        protected Message()
+        protected XXMessage()
         {
             TimeStamp = DateTime.UtcNow;
             Id = Guid.NewGuid();

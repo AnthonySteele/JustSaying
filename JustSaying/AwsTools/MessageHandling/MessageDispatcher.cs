@@ -7,7 +7,6 @@ using JustSaying.Messaging.MessageHandling;
 using JustSaying.Messaging.MessageProcessingStrategies;
 using JustSaying.Messaging.MessageSerialisation;
 using JustSaying.Messaging.Monitoring;
-using Message = JustSaying.Models.Message;
 using SQSMessage = Amazon.SQS.Model.Message;
 using Microsoft.Extensions.Logging;
 
@@ -44,7 +43,7 @@ namespace JustSaying.AwsTools.MessageHandling
 
         public async Task DispatchMessage(SQSMessage message)
         {
-            Message typedMessage;
+            object typedMessage;
             try
             {
                 typedMessage = _serialisationRegister.DeserializeMessage(message.Body);
@@ -70,9 +69,7 @@ namespace JustSaying.AwsTools.MessageHandling
             {
                 if (typedMessage != null)
                 {
-                    var env = new MessageEnvelope<Message>(message, typedMessage);
-                    typedMessage.ReceiptHandle = message.ReceiptHandle;
-                    typedMessage.QueueUrl = _queue.Url;
+                    var env = new MessageEnvelope<object>(message, typedMessage);
                     handlingSucceeded = await CallMessageHandler(env).ConfigureAwait(false);
                 }
 
@@ -104,7 +101,7 @@ namespace JustSaying.AwsTools.MessageHandling
             }
         }
 
-        private async Task<bool> CallMessageHandler(MessageEnvelope<Message> env)
+        private async Task<bool> CallMessageHandler(MessageEnvelope<object> env)
         {
             var handler = _handlerMap.Get(env.Message.GetType());
 
@@ -135,7 +132,7 @@ namespace JustSaying.AwsTools.MessageHandling
             await _queue.Client.DeleteMessageAsync(deleteRequest).ConfigureAwait(false);
         }
         
-        private async Task UpdateMessageVisibilityTimeout(SQSMessage message, string receiptHandle, Message typedMessage, Exception lastException)
+        private async Task UpdateMessageVisibilityTimeout(SQSMessage message, string receiptHandle, object typedMessage, Exception lastException)
         {
             if (TryGetApproxReceiveCount(message.Attributes, out int approxReceiveCount))
             {
