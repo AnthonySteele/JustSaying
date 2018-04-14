@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace JustSaying.Messaging.MessageHandling
 {
-    public class ExactlyOnceHandler<T> : IHandlerAsync<T>
+    public class ExactlyOnceHandler<T> : IHandlerAsync<T> where T : class
     {
         private readonly IHandlerAsync<T> _inner;
         private readonly IMessageLockAsync _messageLock;
@@ -23,7 +23,7 @@ namespace JustSaying.Messaging.MessageHandling
 
         public async Task<bool> Handle(MessageEnvelope<T> env)
         {
-            var lockKey = $"{env.Message.UniqueKey()}-{typeof(T).Name.ToLower()}-{_handlerName}";
+            var lockKey = $"{env.UniqueKey()}-{typeof(T).Name.ToLower()}-{_handlerName}";
             var lockResponse = await _messageLock.TryAquireLockAsync(lockKey, TimeSpan.FromSeconds(_timeOut)).ConfigureAwait(false);
             if (!lockResponse.DoIHaveExclusiveLock)
             {

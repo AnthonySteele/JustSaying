@@ -35,7 +35,7 @@ namespace JustSaying.Messaging.MessageHandling
     /// var message = env.Message;
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class MessageEnvelope<T>
+    public class MessageEnvelope<T> where T : class
     {
         public MessageEnvelope(Message rawMessage, T message)
         {
@@ -60,22 +60,27 @@ namespace JustSaying.Messaging.MessageHandling
     /// </summary>
     public static class MessageEnvelopeExtensions
     {
-        public static string MessageId<T>(this MessageEnvelope<T> env)
+        public static string MessageId<T>(this MessageEnvelope<T> env) where T : class
         {
             return env.RawMessage.MessageId;
         }
 
-        public static string ReceiptHandle<T>(this MessageEnvelope<T> env)
+        public static string UniqueKey<T>(this MessageEnvelope<T> env) where T : class
+        {
+            return "dummy!";
+        }
+
+        public static string ReceiptHandle<T>(this MessageEnvelope<T> env) where T : class
         {
             return env.RawMessage.ReceiptHandle;
         }
 
-        public static string AttributeValue<T>(this MessageEnvelope<T> env, string name)
+        public static string AttributeValue<T>(this MessageEnvelope<T> env, string name) where T : class
         {
             return env.RawMessage.Attributes[name];
         }
 
-        public static bool HasAttribute<T>(this MessageEnvelope<T> env, string name)
+        public static bool HasAttribute<T>(this MessageEnvelope<T> env, string name) where T : class
         {
             return env.RawMessage.Attributes.ContainsKey(name);
         }

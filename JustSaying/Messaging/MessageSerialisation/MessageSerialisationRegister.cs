@@ -8,7 +8,7 @@ namespace JustSaying.Messaging.MessageSerialisation
     {
         private readonly Dictionary<string, TypeSerialiser> _map = new Dictionary<string, TypeSerialiser>();
 
-        public void AddSerialiser<T>(IMessageSerialiser serialiser) where T : Message
+        public void AddSerialiser<T>(IMessageSerialiser serialiser) where T : class
         {
             var keyname = typeof(T).Name;
             if (!_map.ContainsKey(keyname))
@@ -17,7 +17,7 @@ namespace JustSaying.Messaging.MessageSerialisation
             }
         }
 
-        public Message DeserializeMessage(string body)
+        public object DeserializeMessage(string body)
         {
             foreach (var formatter in _map)
             {
@@ -40,7 +40,7 @@ namespace JustSaying.Messaging.MessageSerialisation
                 $"Message can not be handled - type undetermined. Message body: '{body}'");
         }
 
-        public string Serialise(Message message, bool serializeForSnsPublishing)
+        public string Serialise(object message, bool serializeForSnsPublishing)
         {
             var formatter = _map[message.GetType().Name];
             return formatter.Serialiser.Serialise(message, serializeForSnsPublishing);

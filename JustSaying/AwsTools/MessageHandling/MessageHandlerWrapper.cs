@@ -16,7 +16,7 @@ namespace JustSaying.AwsTools.MessageHandling
             _messagingMonitor = messagingMonitor;
         }
 
-        public Func<MessageEnvelope<object>, Task<bool>> WrapMessageHandler<T>(Func<IHandlerAsync<T>> futureHandler) where T : Message
+        public Func<MessageEnvelope<object>, Task<bool>> WrapMessageHandler<T>(Func<IHandlerAsync<T>> futureHandler) where T : class
         {
             return async env =>
             {
@@ -29,7 +29,7 @@ namespace JustSaying.AwsTools.MessageHandling
             };
         }
 
-        private IHandlerAsync<T> MaybeWrapWithExactlyOnce<T>(IHandlerAsync<T> handler)
+        private IHandlerAsync<T> MaybeWrapWithExactlyOnce<T>(IHandlerAsync<T> handler) where T: class
         {
             var handlerType = handler.GetType();
             var exactlyOnceMetadata = new ExactlyOnceReader(handlerType);
@@ -47,7 +47,7 @@ namespace JustSaying.AwsTools.MessageHandling
             return new ExactlyOnceHandler<T>(handler, _messageLock, exactlyOnceMetadata.GetTimeOut(), handlerName);
         }
 
-        private IHandlerAsync<T> MaybeWrapWithStopwatch<T>(IHandlerAsync<T> handler)
+        private IHandlerAsync<T> MaybeWrapWithStopwatch<T>(IHandlerAsync<T> handler) where T : class
         {
             if (!(_messagingMonitor is IMeasureHandlerExecutionTime executionTimeMonitoring))
             {

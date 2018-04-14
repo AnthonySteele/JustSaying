@@ -9,7 +9,7 @@ namespace JustSaying.Messaging.MessageSerialisation
         /// </summary>
         /// <param name="body">Message must always have Subject and Message properties</param>
         /// <returns></returns>
-        Message DeserializeMessage(string body);
+        object DeserializeMessage(string body);
 
         /// <summary>
         /// Serializes a message for publishing
@@ -21,8 +21,8 @@ namespace JustSaying.Messaging.MessageSerialisation
         /// AWS SNS service adds these automatically, so for publishing to topics don't add these properties
         /// </param>
         /// <returns></returns>
-        string Serialise(Message message, bool serializeForSnsPublishing);
+        string Serialise(object message, bool serializeForSnsPublishing);
 
-        void AddSerialiser<T>(IMessageSerialiser serialiser) where T : Message;
+        void AddSerialiser<T>(IMessageSerialiser serialiser) where T : class;
     }
 }

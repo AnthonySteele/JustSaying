@@ -14,7 +14,7 @@ namespace JustSaying.AwsTools.MessageHandling
     {
         private readonly IAmazonSQS _client;
         private readonly IMessageSerialisationRegister _serialisationRegister;
-        public Action<MessageResponse, Message> MessageResponseLogger { get; set; }
+        public Action<MessageResponse, object> MessageResponseLogger { get; set; }
 
         public SqsPublisher(RegionEndpoint region, string queueName, IAmazonSQS client,
             int retryCountBeforeSendingToErrorQueue, IMessageSerialisationRegister serialisationRegister,
@@ -26,7 +26,7 @@ namespace JustSaying.AwsTools.MessageHandling
         }
 
 #if AWS_SDK_HAS_SYNC
-        public void Publish(Message message)
+        public void Publish(object message)
         {
             var request = BuildSendMessageRequest(message);
 
@@ -49,9 +49,9 @@ namespace JustSaying.AwsTools.MessageHandling
         }
 #endif
 
-        public Task PublishAsync(Message message) => PublishAsync(message, CancellationToken.None);
+        public Task PublishAsync(object message) => PublishAsync(message, CancellationToken.None);
 
-        public async Task PublishAsync(Message message, CancellationToken cancellationToken)
+        public async Task PublishAsync(object message, CancellationToken cancellationToken)
         {
             var request = BuildSendMessageRequest(message);
             try
@@ -71,7 +71,7 @@ namespace JustSaying.AwsTools.MessageHandling
             }
         }
 
-        private SendMessageRequest BuildSendMessageRequest(Message message)
+        private SendMessageRequest BuildSendMessageRequest(object message)
         {
             var request = new SendMessageRequest
             {
@@ -86,6 +86,6 @@ namespace JustSaying.AwsTools.MessageHandling
             return request;
         }
 
-        public string GetMessageInContext(Message message) => _serialisationRegister.Serialise(message, serializeForSnsPublishing: false);
+        public string GetMessageInContext(object message) => _serialisationRegister.Serialise(message, serializeForSnsPublishing: false);
     }
 }
