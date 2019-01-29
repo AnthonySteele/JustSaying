@@ -2,7 +2,6 @@ using System;
 using System.Reflection;
 using System.Threading.Tasks;
 using JustSaying.AwsTools.QueueCreation;
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Xunit;
 
@@ -16,31 +15,18 @@ namespace JustSaying.UnitTests
         private bool _recordThrownExceptions;
         protected Exception ThrownException { get; private set; }
 
-        public JustSaying.JustSayingFluently SystemUnderTest { get; private set; }
+        public MessagingBusBuilder SystemUnderTest { get; private set; }
 
-        protected virtual JustSaying.JustSayingFluently CreateSystemUnderTest()
+        protected virtual MessagingBusBuilder CreateSystemUnderTest()
         {
             if (Configuration == null)
             {
                 Configuration = new MessagingConfig();
             }
 
-            var fns = CreateMeABus
-                .WithLogging(new LoggerFactory())
-                .InRegion("defaultRegion")
-                .WithFailoverRegion("failoverRegion")
-                .WithActiveRegion(() => "defaultRegion")
-                .ConfigurePublisherWith(x =>
-                {
-                    x.PublishFailureBackoff = Configuration.PublishFailureBackoff;
-                    x.PublishFailureReAttempts = Configuration.PublishFailureReAttempts;
 
-                }) as JustSaying.JustSayingFluently;
-
-            ConfigureNotificationStackMock(fns);
-            ConfigureAmazonQueueCreator(fns);
-
-            return fns;
+            var builder = new MessagingBusBuilder();
+            return builder;
         }
 
         // ToDo: Must do better!!

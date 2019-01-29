@@ -2,12 +2,13 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Shouldly;
 using Xunit;
+using Xunit.Sdk;
 
 namespace JustSaying.UnitTests.JustSayingFluently.ConfigValidation
 {
     public class WhenConfigIsValid : JustSayingFluentlyTestBase
     {
-        protected override JustSaying.JustSayingFluently CreateSystemUnderTest()
+        protected override MessagingBusBuilder CreateSystemUnderTest()
         {
             return null;
         }

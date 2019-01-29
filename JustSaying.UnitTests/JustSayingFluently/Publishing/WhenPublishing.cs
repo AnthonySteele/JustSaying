@@ -13,7 +13,8 @@ namespace JustSaying.UnitTests.JustSayingFluently.Publishing
 
         protected override async Task WhenAsync()
         {
-            await SystemUnderTest.PublishAsync(_message);
+            var publisher = SystemUnderTest.BuildPublisher();
+            await publisher.PublishAsync(_message);
         }
 
         [Fact]

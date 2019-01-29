@@ -8,7 +8,7 @@ namespace JustSaying.UnitTests.JustSayingFluently.ConfigValidation
 {
     public class WhenNoRegionIsProvided : JustSayingFluentlyTestBase
     {
-        protected override JustSaying.JustSayingFluently CreateSystemUnderTest()
+        protected override MessagingBusBuilder CreateSystemUnderTest()
         {
             return null;
         }

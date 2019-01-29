@@ -8,7 +8,7 @@ namespace JustSaying.UnitTests.JustSayingFluently.ConfigValidation
 {
     public class WhenRegionIsDuplicated : JustSayingFluentlyTestBase
     {
-        protected override JustSaying.JustSayingFluently CreateSystemUnderTest()
+        protected override MessagingBusBuilder CreateSystemUnderTest()
         {
             return null;
         }
