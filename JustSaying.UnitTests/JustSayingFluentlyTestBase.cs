@@ -1,6 +1,6 @@
 using System;
-using System.Reflection;
 using System.Threading.Tasks;
+using JustSaying.AwsTools;
 using JustSaying.AwsTools.QueueCreation;
 using NSubstitute;
 using Xunit;
@@ -25,25 +25,18 @@ namespace JustSaying.UnitTests
             }
 
 
-            var builder = new MessagingBusBuilder();
+            var builder = new MessagingBusBuilder()
+                .Client((options) => options.WithClientFactory(AwsClient))
+                .Messaging((options) => options
+                    .WithRegion("defaultRegion")
+                    .WithActiveRegion("defaultRegion"));
+
             return builder;
         }
 
-        // ToDo: Must do better!!
-        private void ConfigureNotificationStackMock(JustSaying.JustSayingFluently fns)
+        private IAwsClientFactory AwsClient()
         {
-            var constructedStack = (JustSaying.JustSayingBus)fns.Bus;
-
-            Bus = Substitute.For<IAmJustSaying>();
-            Bus.Config.Returns(constructedStack.Config);
-
-            fns.Bus = Bus;
-        }
-
-        private void ConfigureAmazonQueueCreator(JustSaying.JustSayingFluently fns)
-        {
-            fns.GetType()
-                .GetField("_amazonQueueCreator", BindingFlags.Instance | BindingFlags.NonPublic)?.SetValue(fns, QueueVerifier);
+            return Substitute.For<IAwsClientFactory>();
         }
 
         public async Task InitializeAsync()
