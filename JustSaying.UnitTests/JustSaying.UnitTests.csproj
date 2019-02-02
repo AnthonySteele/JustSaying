@@ -9,6 +9,7 @@
     <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\JustSaying.Extensions.DependencyInjection.Microsoft\JustSaying.Extensions.DependencyInjection.Microsoft.csproj" />
     <ProjectReference Include="..\JustSaying.TestingFramework\JustSaying.TestingFramework.csproj" />
   </ItemGroup>
   <ItemGroup>

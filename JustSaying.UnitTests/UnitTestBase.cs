@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using JustSaying.AwsTools;
+using JustSaying.AwsTools.QueueCreation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
@@ -14,27 +15,32 @@ namespace JustSaying.UnitTests
         private bool _recordThrownExceptions;
         protected Exception ThrownException { get; private set; }
 
-        public IServiceCollection Services { get; private set; }
+        public IServiceProvider Services { get; private set; }
 
         protected ITestOutputHelper OutputHelper { get; }
+
+        protected readonly IVerifyAmazonQueues QueueVerifier = Substitute.For<IVerifyAmazonQueues>();
 
         protected UnitTestBase(ITestOutputHelper outputHelper)
         {
             OutputHelper = outputHelper;
         }
 
-        protected IServiceCollection CreateServices()
+        protected IServiceProvider CreateServices()
         {
-            var services = new ServiceCollection()
-                .AddLogging((p) => p.AddXUnit(OutputHelper).SetMinimumLevel(LogLevel.Debug))
-                .AddJustSaying(ConfigureJustSaying);
+            var services = new ServiceCollection();
 
+            services
+                .AddLogging((p) => p.AddXUnit(OutputHelper).SetMinimumLevel(LogLevel.Debug))
+                .AddJustSaying((p) => ConfigureJustSaying(p, services));
+
+            services.AddSingleton(QueueVerifier);
             ConfigureServices(services);
 
-            return services;
+            return services.BuildServiceProvider();
         }
 
-        protected virtual void ConfigureJustSaying(MessagingBusBuilder builder, IServiceProvider serviceProvider)
+        protected virtual void ConfigureJustSaying(MessagingBusBuilder builder, IServiceCollection services)
         {
             builder
                 .Client((options) => options.WithClientFactory(() => Substitute.For<IAwsClientFactory>()))
@@ -66,7 +72,10 @@ namespace JustSaying.UnitTests
         {
         }
 
-        protected abstract Task WhenAsync();
+        protected virtual Task WhenAsync()
+        {
+            return Task.CompletedTask;
+        }
 
         public Task DisposeAsync()
         {
