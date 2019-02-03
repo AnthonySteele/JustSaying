@@ -14,29 +14,32 @@ namespace JustSaying.UnitTests.JustSayingFluently.AddingHandlers
 {
     public class WhenAddingASubscriptionHandler : UnitTestBase
     {
+        private readonly IHandlerAsync<Message> _handler = Substitute.For<IHandlerAsync<Message>>();
+
         public WhenAddingASubscriptionHandler(ITestOutputHelper outputHelper) : base(outputHelper)
         { }
 
-        private readonly IHandlerAsync<Message> _handler = Substitute.For<IHandlerAsync<Message>>();
-
-        protected override void ConfigureJustSaying(MessagingBusBuilder builder, IServiceCollection services)
+        protected override void ConfigureServices(IServiceCollection services)
         {
-            base.ConfigureJustSaying(builder, services);
+            base.ConfigureServices(services);
+            services.AddSingleton<IHandlerAsync<Message>>(_handler);
+        }
 
-            services.AddSingleton(_handler);
-
+        protected override void ConfigureJustSaying(MessagingBusBuilder builder)
+        {
+            base.ConfigureJustSaying(builder);
             builder.Subscriptions(
                 (options) => options.ForQueue<Message>());
         }
 
         protected override Task WhenAsync()
         {
-            var messageBuss = Services.GetService<IMessagingBus>();
+            var messageBus = Services.GetService<IMessagingBus>();
 
             var ctx = new CancellationTokenSource();
             ctx.CancelAfter(TimeSpan.FromSeconds(1));
 
-            messageBuss.Start(ctx.Token);
+            messageBus.Start(ctx.Token);
             return Task.CompletedTask;
         }
 

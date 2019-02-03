@@ -12,12 +12,12 @@ namespace JustSaying.UnitTests
 {
     public abstract class UnitTestBase : IAsyncLifetime
     {
+        protected ITestOutputHelper OutputHelper { get; }
+
         private bool _recordThrownExceptions;
         protected Exception ThrownException { get; private set; }
 
         public IServiceProvider Services { get; private set; }
-
-        protected ITestOutputHelper OutputHelper { get; }
 
         protected readonly IVerifyAmazonQueues QueueVerifier = Substitute.For<IVerifyAmazonQueues>();
 
@@ -29,18 +29,20 @@ namespace JustSaying.UnitTests
         protected IServiceProvider CreateServices()
         {
             var services = new ServiceCollection();
-
-            services
-                .AddLogging((p) => p.AddXUnit(OutputHelper).SetMinimumLevel(LogLevel.Debug))
-                .AddJustSaying((p) => ConfigureJustSaying(p, services));
-
-            services.AddSingleton(QueueVerifier);
             ConfigureServices(services);
-
             return services.BuildServiceProvider();
         }
 
-        protected virtual void ConfigureJustSaying(MessagingBusBuilder builder, IServiceCollection services)
+        protected virtual void ConfigureServices(IServiceCollection services)
+        {
+            services
+                .AddLogging((p) => p.AddXUnit(OutputHelper).SetMinimumLevel(LogLevel.Debug))
+                .AddJustSaying(ConfigureJustSaying);
+
+            services.AddSingleton(QueueVerifier);
+        }
+
+        protected virtual void ConfigureJustSaying(MessagingBusBuilder builder)
         {
             builder
                 .Client((options) => options.WithClientFactory(() => Substitute.For<IAwsClientFactory>()))
@@ -49,9 +51,6 @@ namespace JustSaying.UnitTests
                     .WithActiveRegion("defaultRegion"));
         }
 
-        protected virtual void ConfigureServices(IServiceCollection services)
-        {
-        }
 
         public async Task InitializeAsync()
         {
