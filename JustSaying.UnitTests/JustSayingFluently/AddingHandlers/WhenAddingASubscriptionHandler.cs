@@ -29,17 +29,12 @@ namespace JustSaying.UnitTests.JustSayingFluently.AddingHandlers
         {
             base.ConfigureJustSaying(builder);
             builder.Subscriptions(
-                (options) => options.ForQueue<Message>());
+                (options) => options.ForTopic<Message>());
         }
 
         protected override Task WhenAsync()
         {
             var messageBus = Services.GetService<IMessagingBus>();
-
-            var ctx = new CancellationTokenSource();
-            ctx.CancelAfter(TimeSpan.FromSeconds(1));
-
-            messageBus.Start(ctx.Token);
             return Task.CompletedTask;
         }
 
