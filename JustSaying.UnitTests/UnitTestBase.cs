@@ -1,10 +1,14 @@
 using System;
 using System.Threading.Tasks;
+using Amazon;
 using JustSaying.AwsTools;
+using JustSaying.AwsTools.MessageHandling;
 using JustSaying.AwsTools.QueueCreation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
+using NSubstitute.Core;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -24,6 +28,21 @@ namespace JustSaying.UnitTests
         protected UnitTestBase(ITestOutputHelper outputHelper)
         {
             OutputHelper = outputHelper;
+
+            QueueVerifier.EnsureQueueExistsAsync(Arg.Any<string>(), Arg.Any<SqsReadConfiguration>())
+                .Returns((callInfo) => Task.FromResult(MakeDummyQueue(callInfo)));
+        }
+
+        private SqsQueueByName MakeDummyQueue(CallInfo call)
+        {
+            string regionName = call.Args()[0].ToString();
+            SqsReadConfiguration readConfig = call.Args()[1] as SqsReadConfiguration;
+
+            var region = RegionEndpoint.GetBySystemName(regionName);
+            var logger = Services.GetService<ILoggerFactory>() ?? new NullLoggerFactory();
+            return new SqsQueueByName(
+                region, readConfig.QueueName ?? "dummyQueueName",
+                null, 3, logger);
         }
 
         protected IServiceProvider CreateServices()

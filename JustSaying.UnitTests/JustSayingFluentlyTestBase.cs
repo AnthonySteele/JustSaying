@@ -57,7 +57,8 @@ namespace JustSaying.UnitTests
         private void ConfigureAmazonQueueCreator(JustSaying.JustSayingFluently fns)
         {
             fns.GetType()
-                .GetField("_amazonQueueCreator", BindingFlags.Instance | BindingFlags.NonPublic)?.SetValue(fns, QueueVerifier);
+                .GetField("_amazonQueueCreator", BindingFlags.Instance | BindingFlags.NonPublic)
+                ?.SetValue(fns, QueueVerifier);
         }
 
         public async Task InitializeAsync()

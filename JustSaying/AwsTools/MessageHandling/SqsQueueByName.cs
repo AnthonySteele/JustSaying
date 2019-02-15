@@ -61,7 +61,7 @@ namespace JustSaying.AwsTools.MessageHandling
             {
                 var request = new SetQueueAttributesRequest
                 {
-                    QueueUrl = Uri.AbsoluteUri,
+                    QueueUrl = Uri?.AbsoluteUri,
                     Attributes = new Dictionary<string, string>
                         {
                             {JustSayingConstants.AttributeRedrivePolicy, requestedRedrivePolicy.ToString()}

@@ -22,7 +22,7 @@ namespace JustSaying.UnitTests.JustSayingFluently.AddingHandlers
         protected override void ConfigureServices(IServiceCollection services)
         {
             base.ConfigureServices(services);
-            services.AddSingleton<IHandlerAsync<Message>>(_handler);
+            services.AddSingleton(_handler);
         }
 
         protected override void ConfigureJustSaying(MessagingBusBuilder builder)
